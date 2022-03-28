@@ -1,6 +1,5 @@
 import os
 import pathlib
-from functools import lru_cache
 
 
 class BaseConfig:
@@ -26,7 +25,6 @@ class TestingConfig(BaseConfig):
     pass
 
 
-# @lru_cache
 def get_settings():
     config_cls_dict = {
         "development": DevelopmentConfig,

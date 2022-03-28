@@ -2,11 +2,19 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-from project.config import settings
+from project import config
 
-# https://fastapi.tiangolo.com/tutorial/sql-databases/#create-the-sqlalchemy-engine
-engine = create_engine(settings.DATABASE_URL,
-                       connect_args=settings.DATABASE_CONNECT_DICT)
-
+engine = create_engine(config.settings.DATABASE_URL,
+                       connect_args=config.settings.DATABASE_CONNECT_DICT)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+
+
+# dependency
+def get_db():
+    db = SessionLocal()
+
+    try:
+        yield db
+    finally:
+        db.close()
