@@ -1,11 +1,10 @@
 from typing import List
-from fastapi import HTTPException, Depends
+from fastapi import HTTPException
 
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 from urllib.parse import urlencode, quote_plus
-from sqlalchemy.orm import Session
 
 from project import database, models, schemas
 
@@ -61,17 +60,25 @@ def get_lastest_news(query_term):
     return news_data_list
 
 
-def store_news_content(insert_news_content=List[schemas.News],
-                       db: Session = Depends(database.get_db)):
+def store_news_content(insert_news_content=List[schemas.News]):
+    session = database.SessionLocal()
 
-    objects = [
-        models.News(source=["source"],
-                    post_time=news["post_time"],
-                    origin_url=news["origin_url"],
-                    title=news["title"]) for news in insert_news_content
-    ]
-    db.bulk_save_objects(objects)
-    db.commit()
-    db.refresh(objects)
+    for news in insert_news_content:
+        news = models.News(source=news["source"],
+                           post_time=news["post_time"],
+                           origin_url=news["origin_url"],
+                           title=news["title"])
+        session.add(news)
+        session.commit()
+        session.refresh(news)
+        # objects = [
+        #     models.News(source=news["source"],
+        #                 post_time=news["post_time"],
+        #                 origin_url=news["origin_url"],
+        #                 title=news["title"]) for news in insert_news_content
+        # ]
+        # db.bulk_save_objects(objects)
+        # db.commit()
+        # db.refresh(objects)
 
     return True
