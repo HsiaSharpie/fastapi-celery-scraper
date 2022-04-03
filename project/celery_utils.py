@@ -15,7 +15,7 @@ def create_celery():
     # disable UTC so that Celery can use local time
     celery_app.conf.enable_utc = False
 
-    # add "birthdays_today" task to the beat schedule
+    # add "crawl_url" task to the beat schedule
     celery_app.conf.beat_schedule = {
         "crawl_url": {
             "task": "project.news.tasks.crawl_url",

@@ -4,4 +4,6 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
+# --reload-dir <path> - Specify which directories to watch for python file changes.
+# May be used multiple times. If unused, then by default the whole current directory will be watched.
 uvicorn main:app --reload --reload-dir project --host 0.0.0.0
